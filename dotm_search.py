@@ -11,16 +11,16 @@ import os
 # from docx import Document
 import doctest
 import zipfile
-# print('test')
-# print(os.getcwd())
-# print(os.listdir(os.getcwd()))
+import argparse
 
-# with zipfile.ZipFile('/Users/travisanderson/Documents/dailyAssignments/backend/backend-dotm-search-assessment/test/A997.dotm', 'r') as file:
-#     with file.open('word/document.xml', 'r') as s:
-#         print(s.read())
-
-# print(zipfile.is_zipfile(
-#     '/Users/travisanderson/Documents/dailyAssignments/backend/backend-dotm-search-assessment/test/test.dotm'))
+# parser = argparse.ArgumentParser(description='Finding out what argparse does')
+# parser.add_argument('--dir', help='I need this')
+# parser.add_argument('string', help='I need this')
+# args = parser.parse_args()
+# if args.string:
+#     print("yayy?")
+#     print(args.dir)
+#     print(args.string)
 
 
 def get_files(string_to_find, search_directory):
@@ -33,14 +33,17 @@ def get_files(string_to_find, search_directory):
 
 
 def print_files_with_string(all_files, input_path, string_to_find):
-    count = 0
+    count_files_including_string = 0
     for my_file in all_files:
         file_location = os.path.join(input_path, my_file)
         if zipfile.is_zipfile(file_location):
-            count += decode_file(file_location, string_to_find)
+            count_files_including_string += decode_file(
+                file_location, string_to_find)
     print("")
-    print ("Files found:")
-    print count
+    print("Search Directory Files: {} ".format(input_path))
+    print(len(all_files))
+    print ("Files found with string: '{}'" .format(string_to_find))
+    print count_files_including_string
 
 
 def decode_file(file_location, string_to_find):
@@ -60,18 +63,23 @@ def decode_file(file_location, string_to_find):
     return 0
 
 
+def create_parser():
+    parser = argparse.ArgumentParser(
+        description='Finding out what argparse does')
+    parser.add_argument('-d', '--dir', help='I need this', default=".")
+    parser.add_argument('string', help='I need this')
+    return parser
+
+
 def main():
-    arguments_amount = len(sys.argv)
-    search_directory = os.getcwd()
-    if arguments_amount < 2 or arguments_amount > 4:
-        print "-----Need to input arguments 1 req, 2 optional, other conditions fail i.e python dotm_search.py myword filedirectory-----"
-        return
-    if arguments_amount == 2:
-        string_to_find = str(sys.argv[1])
-    if arguments_amount == 4:
-        string_to_find = str(sys.argv[3])
-        search_directory = os.path.join(search_directory, sys.argv[2][2:])
-    get_files(string_to_find, search_directory)
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if not args:
+        parser.print_usage()
+        sys.exit()
+
+    get_files(args.string, args.dir)
 
 
 if __name__ == '__main__':
