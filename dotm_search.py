@@ -42,7 +42,7 @@ def print_files_with_string(all_files, input_path, string_to_find):
     print("")
     print("Search Directory Files: {} ".format(input_path))
     print(len(all_files))
-    print ("Files found with string: '{}'" .format(string_to_find))
+    print ("Files found with string: '{}' " .format(string_to_find))
     print count_files_including_string
 
 
